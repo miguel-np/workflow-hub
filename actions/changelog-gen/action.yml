@@ -1,0 +1,24 @@
+name: Changelog Generator
+description: Generates CHANGELOG and GitHub Release from Conventional Commits
+
+inputs:
+  release-type:
+    description: 'Type of project (node, python, simple, go, rust, etc.)'
+    required: false
+    default: 'simple'
+
+outputs:
+  release-created:
+    description: Whether a release was created
+    value: ${{ steps.release.outputs.release_created }}
+  tag-name:
+    description: The release tag name
+    value: ${{ steps.release.outputs.tag_name }}
+
+runs:
+  using: composite
+  steps:
+    - id: release
+      uses: googleapis/release-please-action@v4
+      with:
+        release-type: ${{ inputs.release-type }}

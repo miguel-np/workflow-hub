@@ -1,0 +1,23 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**'
+          - '*.md'
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'actions/**'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'package*.json'
+          - 'requirements*.txt'
+          - 'Pipfile*'
+          - 'Cargo.*'
+          - 'go.mod'
+          - 'go.sum'
+          - 'Gemfile*'
+          - 'composer.*'

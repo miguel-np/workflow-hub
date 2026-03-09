@@ -1,23 +1,31 @@
-name: Validate Workflow Templates
+name: Lint Workflows
 
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - 'actions/**'
   pull_request:
     branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - 'actions/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint YAML workflows
+  actionlint:
+    name: Validate workflow syntax
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install actionlint
-        run: |
-          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-          sudo mv actionlint /usr/local/bin/
-
-      - name: Lint all workflow files
-        run: |
-          actionlint templates/**/*.yml .github/workflows/*.yml
+      - uses: reviewdog/action-actionlint@v1
+        with:
+          reporter: github-pr-check

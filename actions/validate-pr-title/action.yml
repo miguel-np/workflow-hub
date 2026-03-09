@@ -1,0 +1,22 @@
+name: Validate PR Title
+description: Validates that PR title follows Conventional Commits format
+
+inputs:
+  title:
+    description: PR title to validate
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Check Conventional Commits format
+      shell: bash
+      env:
+        PR_TITLE: ${{ inputs.title }}
+      run: |
+        PATTERN='^(feat|fix|docs|chore|refactor|test|ci|perf|build|style|revert)(\(.+\))?(!)?: .+'
+        if [[ ! "$PR_TITLE" =~ $PATTERN ]]; then
+          echo "::error::El título debe seguir Conventional Commits: tipo(scope): descripción"
+          echo "Tipos válidos: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
+          exit 1
+        fi

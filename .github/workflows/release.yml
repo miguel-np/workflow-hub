@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      release-type:
+        description: 'Tipo de proyecto (node, python, simple, go, rust, etc.)'
+        type: string
+        default: 'simple'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          release-type: ${{ inputs.release-type }}

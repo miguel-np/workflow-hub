@@ -1,0 +1,17 @@
+name: Gitleaks Scan
+description: Scans repository history for secrets and credentials
+
+inputs:
+  github-token:
+    description: GitHub token for API access
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}

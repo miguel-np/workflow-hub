@@ -1,0 +1,47 @@
+name: PR Checks
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    name: Validate PR title and description
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check Conventional Commits format
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          PATTERN='^(feat|fix|docs|chore|refactor|test|ci|perf|build|style|revert)(\(.+\))?(!)?: .+'
+          if [[ ! "$PR_TITLE" =~ $PATTERN ]]; then
+            echo "::error::El título debe seguir Conventional Commits: tipo(scope): descripción"
+            echo "Tipos válidos: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
+            exit 1
+          fi
+
+      - name: Verify body is not empty
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          CLEAN=$(echo "$PR_BODY" | sed '/^[[:space:]]*$/d' | sed '/^<!--.*-->$/d')
+          if [ -z "$CLEAN" ]; then
+            echo "::error::El PR debe incluir una descripción del cambio."
+            exit 1
+          fi
+
+  auto-label:
+    name: Auto-label PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          sync-labels: true

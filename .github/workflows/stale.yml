@@ -1,0 +1,37 @@
+name: Stale
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  stale:
+    name: Close stale issues and PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 60
+          days-before-close: 7
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-labels: pinned,security
+          exempt-pr-labels: pinned,security
+          stale-issue-message: >
+            Este issue lleva más de 60 días sin actividad y será cerrado
+            automáticamente en 7 días si no hay respuesta.
+          stale-pr-message: >
+            Este PR lleva más de 60 días sin actividad y será cerrado
+            automáticamente en 7 días si no hay respuesta.
+          close-issue-message: Cerrado por inactividad. Reabre si sigue siendo relevante.
+          close-pr-message: Cerrado por inactividad. Reabre si sigue siendo relevante.
