@@ -1,0 +1,4 @@
+# .gitignore for workflow-hub
+.DS_Store
+*.swp
+*.swo

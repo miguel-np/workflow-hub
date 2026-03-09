@@ -1,0 +1,50 @@
+name: Deploy to VPS via SSH
+
+on:
+  workflow_call:
+    inputs:
+      host:
+        description: SSH host (e.g. myserver.com)
+        type: string
+        required: true
+      user:
+        description: SSH user
+        type: string
+        required: true
+      deploy-path:
+        description: Remote path to deploy to
+        type: string
+        required: true
+      compose-file:
+        description: Docker Compose file to use
+        type: string
+        default: docker-compose.yml
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ inputs.host }}
+          username: ${{ inputs.user }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: ${{ inputs.deploy-path }}
+
+      - name: Deploy with Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ inputs.host }}
+          username: ${{ inputs.user }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ inputs.deploy-path }}
+            docker compose -f ${{ inputs.compose-file }} pull
+            docker compose -f ${{ inputs.compose-file }} up -d --remove-orphans
