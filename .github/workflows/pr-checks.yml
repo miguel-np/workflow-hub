@@ -19,8 +19,8 @@ jobs:
         run: |
           PATTERN='^(feat|fix|docs|chore|refactor|test|ci|perf|build|style|revert)(\(.+\))?(!)?: .+'
           if [[ ! "$PR_TITLE" =~ $PATTERN ]]; then
-            echo "::error::El título debe seguir Conventional Commits: tipo(scope): descripción"
-            echo "Tipos válidos: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
+            echo "::error::PR title must follow Conventional Commits: type(scope): description"
+            echo "Valid types: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
             exit 1
           fi
 
@@ -30,7 +30,7 @@ jobs:
         run: |
           CLEAN=$(echo "$PR_BODY" | sed '/^[[:space:]]*$/d' | sed '/^<!--.*-->$/d')
           if [ -z "$CLEAN" ]; then
-            echo "::error::El PR debe incluir una descripción del cambio."
+            echo "::error::Pull request description must not be empty. Please fill in the PR template."
             exit 1
           fi
 

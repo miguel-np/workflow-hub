@@ -1,47 +1,73 @@
 name: Bug Report
-description: Reportar un error o comportamiento inesperado
+description: Report unexpected behaviour or a broken workflow/action.
 labels: [bug]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to file a bug report. Please fill in as much detail as possible.
+        **Do not include secrets, tokens, or any sensitive information.**
+
   - type: textarea
     id: description
     attributes:
-      label: Descripción del bug
-      description: Descripción clara del error
+      label: Description
+      description: A clear and concise description of the bug.
+      placeholder: What went wrong?
     validations:
       required: true
 
   - type: textarea
     id: expected
     attributes:
-      label: Comportamiento esperado
-      description: Qué debería haber pasado
+      label: Expected behaviour
+      description: What did you expect to happen?
     validations:
       required: true
 
   - type: textarea
     id: steps
     attributes:
-      label: Pasos para reproducir
-      description: Pasos mínimos para reproducir el error
+      label: Steps to reproduce
+      description: Minimum steps to consistently reproduce the issue.
       placeholder: |
-        1. ...
-        2. ...
+        1. Call workflow X from repository Y with input Z
+        2. The job fails at step ...
         3. ...
     validations:
       required: true
 
-  - type: textarea
-    id: environment
+  - type: input
+    id: version
     attributes:
-      label: Entorno
-      description: SO, versión, runtime, etc.
+      label: Workflow/Action version
+      description: The tag or ref you are referencing (e.g. `v1`, `v1.1.0`).
+      placeholder: v1
     validations:
       required: true
+
+  - type: input
+    id: run-url
+    attributes:
+      label: Workflow run URL
+      description: Link to the failing GitHub Actions run (optional but very helpful).
+      placeholder: https://github.com/org/repo/actions/runs/...
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste relevant log output. Redact any sensitive values.
+      render: text
+    validations:
+      required: false
 
   - type: textarea
     id: context
     attributes:
-      label: Contexto adicional
-      description: Logs, capturas, información extra
+      label: Additional context
+      description: Anything else that might help us understand the issue.
     validations:
       required: false

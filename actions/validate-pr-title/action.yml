@@ -16,7 +16,7 @@ runs:
       run: |
         PATTERN='^(feat|fix|docs|chore|refactor|test|ci|perf|build|style|revert)(\(.+\))?(!)?: .+'
         if [[ ! "$PR_TITLE" =~ $PATTERN ]]; then
-          echo "::error::El título debe seguir Conventional Commits: tipo(scope): descripción"
-          echo "Tipos válidos: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
+          echo "::error::PR title must follow Conventional Commits: type(scope): description"
+          echo "Valid types: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
           exit 1
         fi

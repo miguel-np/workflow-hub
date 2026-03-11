@@ -1,27 +1,51 @@
 name: Feature Request
-description: Proponer una nueva funcionalidad o mejora
+description: Propose a new workflow, action, or improvement.
 labels: [enhancement]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, please search [open issues](../../issues) to avoid duplicates.
+        For security-related requests, follow the [Security Policy](../../blob/main/SECURITY.md) instead.
+
   - type: textarea
     id: problem
     attributes:
-      label: Problema que resuelve
-      description: Qué necesidad o problema motiva esta solicitud
+      label: Problem statement
+      description: |
+        Describe the problem or need this feature addresses.
+        Focus on the *why*, not the *what*.
+      placeholder: As a consumer of this repository, I find it difficult to...
     validations:
       required: true
 
   - type: textarea
     id: solution
     attributes:
-      label: Solución propuesta
-      description: Descripción de la funcionalidad deseada
+      label: Proposed solution
+      description: Describe the workflow, action, or change you would like to see.
     validations:
       required: true
 
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternativas consideradas
-      description: Otras opciones que se hayan evaluado
+      label: Alternatives considered
+      description: Other approaches you evaluated and why you rejected them.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Are you willing to contribute this feature?
+      options:
+        - label: Yes, I would like to implement this and open a pull request.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, references, or any other information that might be relevant.
     validations:
       required: false

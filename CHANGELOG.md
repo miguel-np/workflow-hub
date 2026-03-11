@@ -4,36 +4,36 @@
 
 ### Added
 
-- Workflow `pr-size.yml`: etiquetas XS/S/M/L/XL por líneas cambiadas
-- Workflow `todo-to-issue.yml`: convierte TODO/FIXME en issues al push a main
-- Workflow `lint-workflows.yml`: validación de sintaxis con actionlint (reviewdog)
-- Pre-commit hook `check-added-large-files` (max 500KB)
-- Labels `pinned` y `security` excluidos del stale bot
-- Label `actions/**` en labeler.yml
+- Workflow `pr-size.yml`: XS/S/M/L/XL labels based on lines changed
+- Workflow `todo-to-issue.yml`: converts TODO/FIXME comments to issues on push to main
+- Workflow `lint-workflows.yml`: YAML syntax validation with actionlint via reviewdog
+- Pre-commit hook `check-added-large-files` (max 500 KB)
+- Labels `pinned` and `security` exempt from the stale bot
+- Label rule `actions/**` added to `labeler.yml`
 
 ### Fixed
 
-- `pr-checks.yml`: unificado validate-title y check-description en un solo job (ahorra 1 runner)
-- `security.yml`: añadido `security-events: write` para Gitleaks y condición `pull_request` en dependency-review
-- `lint-workflows.yml`: reemplazado `curl | bash` por action oficial reviewdog/action-actionlint
-- `stale.yml`: añadido bloque `concurrency` para evitar solapamiento de ejecuciones
-- `dependabot.yml`: corregido prefix de `ci` a `ci:` (Conventional Commits válido)
-- `todo-to-issue.yml`: cambiado de `workflow_call` a trigger `push` standalone
-- Eliminada `concurrency` redundante de workflows reusable (`pr-checks`, `pr-size`)
+- `pr-checks.yml`: merged `validate-title` and `check-description` into a single job (saves 1 runner)
+- `security.yml`: added `security-events: write` for Gitleaks and added `pull_request` condition to dependency-review
+- `lint-workflows.yml`: replaced `curl | bash` install with the official `reviewdog/action-actionlint` action
+- `stale.yml`: added `concurrency` block to prevent overlapping scheduled runs
+- `dependabot.yml`: corrected commit prefix from `ci` to `ci:` (valid Conventional Commits format)
+- `todo-to-issue.yml`: changed from `workflow_call` to a standalone `push` trigger
+- Removed redundant `concurrency` blocks from reusable workflows (`pr-checks`, `pr-size`)
 
 ## [1.0.0] - 2026-03-09
 
 ### Added
 
-- Reusable workflows: pr-checks, security, release, stale, dependency-auto-merge
-- Composite actions: validate-pr-title, gitleaks-scan, changelog-gen, auto-label
+- Reusable workflows: `pr-checks`, `security`, `release`, `stale`, `dependency-auto-merge`
+- Composite actions: `validate-pr-title`, `gitleaks-scan`, `changelog-gen`, `auto-label`
 - Issue templates: bug report, feature request
-- Pull request template con checklist
-- Dependabot configurado para GitHub Actions
-- Pre-commit: trailing-whitespace, end-of-file-fixer, check-yaml, check-json, check-merge-conflict, detect-secrets, commitizen
-- Auto-labeler con reglas por tipo de archivo
+- Pull request template with checklist
+- Dependabot configured for GitHub Actions
+- Pre-commit hooks: `trailing-whitespace`, `end-of-file-fixer`, `check-yaml`, `check-json`, `check-merge-conflict`, `detect-secrets`, `commitizen`
+- Auto-labeller with file-based rules
 
 ### Removed
 
-- Templates genéricos de CI/CD (python-test, node-test, deploy-ssh)
-- Estructura de directorios templates/ y docs/
+- Generic CI/CD templates (python-test, node-test, deploy-ssh)
+- `templates/` and `docs/` directory structure

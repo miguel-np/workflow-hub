@@ -17,8 +17,9 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-message: |
-            ¡Gracias por abrir tu primer issue! 🎉
-            Por favor, asegúrate de rellenar la plantilla correctamente para que podamos ayudarte mejor.
+            Thank you for filing your first issue! 🎉
+            Please make sure you have filled in the template completely so we can assist you as quickly as possible.
           pr-message: |
-            ¡Gracias por tu primera contribución! 🎉
-            Revisaremos el PR lo antes posible. Asegúrate de que los checks pasen y de que el título siga el formato de Conventional Commits.
+            Thank you for your first contribution! 🎉
+            We will review this pull request as soon as possible.
+            Please ensure all CI checks pass and that the PR title follows the [Conventional Commits](https://www.conventionalcommits.org/) format.
