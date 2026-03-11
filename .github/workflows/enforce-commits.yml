@@ -1,0 +1,38 @@
+name: Enforce Commit Messages
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  commitlint:
+    name: Lint commit messages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          PATTERN='^(feat|fix|docs|chore|refactor|test|ci|perf|build|style|revert)(\(.+\))?(!)?: .+'
+          FAILED=0
+          while IFS= read -r msg; do
+            if [[ ! "$msg" =~ $PATTERN ]]; then
+              echo "::error::Commit no válido: '$msg'"
+              FAILED=1
+            fi
+          done < <(git log --format=%s "${BASE_SHA}..${HEAD_SHA}")
+          if [[ $FAILED -eq 1 ]]; then
+            echo "Todos los commits deben seguir Conventional Commits: tipo(scope): descripción"
+            echo "Tipos válidos: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
+            exit 1
+          fi
+          echo "Todos los commits son válidos ✓"
