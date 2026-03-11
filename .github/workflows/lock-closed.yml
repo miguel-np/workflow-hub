@@ -1,0 +1,25 @@
+name: Lock Closed Threads
+
+on:
+  workflow_call:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-lock
+  cancel-in-progress: false
+
+jobs:
+  lock:
+    name: Lock stale closed threads
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: dessant/lock-threads@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-inactive-days: 30
+          pr-inactive-days: 30
+          log-output: true
