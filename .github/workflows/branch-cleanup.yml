@@ -34,13 +34,13 @@ jobs:
             }
 
             if (branch === defaultBranch || isProtected) {
-              core.info(`Rama '${branch}' es la rama por defecto o está protegida, se omite el borrado`)
+              core.info(`Branch '${branch}' is the default branch or is protected — skipping deletion.`)
               return
             }
 
             try {
               await github.rest.git.deleteRef({ owner, repo, ref: `heads/${branch}` })
-              core.info(`Rama '${branch}' eliminada correctamente`)
+              core.info(`Branch '${branch}' deleted successfully.`)
             } catch (e) {
-              core.warning(`No se pudo eliminar la rama '${branch}': ${e.message}`)
+              core.warning(`Could not delete branch '${branch}': ${e.message}`)
             }

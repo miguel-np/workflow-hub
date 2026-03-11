@@ -28,10 +28,14 @@ jobs:
           exempt-issue-labels: pinned,security
           exempt-pr-labels: pinned,security
           stale-issue-message: >
-            Este issue lleva más de 60 días sin actividad y será cerrado
-            automáticamente en 7 días si no hay respuesta.
+            This issue has been inactive for more than 60 days and will be closed
+            automatically in 7 days if there is no further activity.
+            If this is still relevant, please leave a comment to keep it open.
           stale-pr-message: >
-            Este PR lleva más de 60 días sin actividad y será cerrado
-            automáticamente en 7 días si no hay respuesta.
-          close-issue-message: Cerrado por inactividad. Reabre si sigue siendo relevante.
-          close-pr-message: Cerrado por inactividad. Reabre si sigue siendo relevante.
+            This pull request has been inactive for more than 60 days and will be closed
+            automatically in 7 days if there is no further activity.
+            If you are still working on this, please leave a comment or push a new commit.
+          close-issue-message: >
+            Closed due to inactivity. Feel free to reopen if this is still relevant.
+          close-pr-message: >
+            Closed due to inactivity. Feel free to reopen if you would like to continue working on this.
