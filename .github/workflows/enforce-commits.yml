@@ -23,9 +23,13 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           PATTERN='^(feat|fix|docs|chore|refactor|test|ci|perf|build|style|revert)(\(.+\))?(!)?: .+'
+          WIP_PATTERN='^(wip|WIP)[[:space:]:!]|^\[WIP\]'
           FAILED=0
           while IFS= read -r msg; do
-            if [[ ! "$msg" =~ $PATTERN ]]; then
+            if [[ "$msg" =~ $WIP_PATTERN ]]; then
+              echo "::error::Commit WIP detectado: '$msg' — elimina o squashea los commits de trabajo en progreso antes de mergear"
+              FAILED=1
+            elif [[ ! "$msg" =~ $PATTERN ]]; then
               echo "::error::Commit no válido: '$msg'"
               FAILED=1
             fi
@@ -33,6 +37,7 @@ jobs:
           if [[ $FAILED -eq 1 ]]; then
             echo "Todos los commits deben seguir Conventional Commits: tipo(scope): descripción"
             echo "Tipos válidos: feat, fix, docs, chore, refactor, test, ci, perf, build, style, revert"
+            echo "Los commits WIP deben ser squasheados antes de mergear"
             exit 1
           fi
           echo "Todos los commits son válidos ✓"
