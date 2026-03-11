@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   license-check:
-    name: Check dependency licenses
+    name: Check project license
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -26,17 +26,18 @@ jobs:
         run: |
           gem install licensee --no-document 2>/dev/null
           echo "Licencia del proyecto:"
-          licensee detect --json | python3 -c "
+          licensee detect --json | python3 - <<'PY'
           import json, sys
           data = json.load(sys.stdin)
-          license_id = data.get('matched_license', 'UNKNOWN')
+          license_id = (data.get('matched_license', '') or 'UNKNOWN').strip()
+          license_id_norm = license_id.lower()
           print(f'  {license_id}')
-          allowed = '${{ inputs.allowed-licenses }}'.split(',')
-          if license_id not in allowed and license_id != 'UNKNOWN':
-              print(f'::error::Licencia {license_id} no está en la lista de licencias permitidas: {allowed}')
+          allowed = [lic.strip().lower() for lic in '${{ inputs.allowed-licenses }}'.split(',') if lic.strip()]
+          if license_id_norm not in allowed and license_id != 'UNKNOWN':
+              print(f'::error::Licencia {license_id} no está en la lista de licencias permitidas: {", ".join(allowed)}')
               sys.exit(1)
           elif license_id == 'UNKNOWN':
               print('::warning::No se detectó licencia en el proyecto. Asegúrate de tener un fichero LICENSE.')
           else:
               print(f'Licencia {license_id} permitida ✓')
-          "
+          PY

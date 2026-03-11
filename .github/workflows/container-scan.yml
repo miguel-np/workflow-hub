@@ -8,7 +8,7 @@ on:
         type: string
         required: true
       severity:
-        description: 'Minimum severity to fail on: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+        description: 'Comma-separated list of severities to include and fail on (Trivy only considers listed severities): UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
         type: string
         required: false
         default: 'HIGH,CRITICAL'

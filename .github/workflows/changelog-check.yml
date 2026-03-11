@@ -30,9 +30,9 @@ jobs:
           CHANGELOG: ${{ inputs.changelog-file }}
           PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
-          # Skip check for dependency update PRs (Dependabot, Renovate)
-          if echo "$PR_LABELS" | grep -qiE '"dependencies"|"renovate"'; then
-            echo "PR de dependencias detectado, se omite la verificación del CHANGELOG ✓"
+          # Skip check for dependency update PRs (Dependabot, Renovate) or PRs with skip-changelog label
+          if echo "$PR_LABELS" | grep -qiE '"dependencies"|"renovate"|"skip-changelog"'; then
+            echo "PR omitido de verificación de CHANGELOG ✓"
             exit 0
           fi
 
@@ -42,6 +42,6 @@ jobs:
           else
             echo "::error::Este PR no incluye cambios en $CHANGELOG."
             echo "Por favor, actualiza el CHANGELOG con los cambios introducidos."
-            echo "Si es un cambio que no requiere entrada (e.g. typo), añade el label 'dependencies' para omitir esta comprobación."
+            echo "Si es un cambio que no requiere entrada en el CHANGELOG (e.g. typo), añade el label 'skip-changelog' para omitir esta comprobación."
             exit 1
           fi
