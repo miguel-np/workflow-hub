@@ -1,0 +1,47 @@
+name: Container Image Scan
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'Image to scan (e.g. myapp:latest or ghcr.io/org/repo:sha)'
+        type: string
+        required: true
+      severity:
+        description: 'Minimum severity to fail on: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+        type: string
+        required: false
+        default: 'HIGH,CRITICAL'
+      upload-sarif:
+        description: 'Upload results to GitHub Security tab as SARIF'
+        type: boolean
+        required: false
+        default: true
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  trivy:
+    name: Trivy vulnerability scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: ${{ inputs.image }}
+          format: sarif
+          output: trivy-results.sarif
+          severity: ${{ inputs.severity }}
+          exit-code: '1'
+
+      - name: Upload SARIF to GitHub Security tab
+        if: inputs.upload-sarif && always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy-container

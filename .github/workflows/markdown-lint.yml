@@ -1,0 +1,26 @@
+name: Markdown Lint
+
+on:
+  workflow_call:
+    inputs:
+      config-file:
+        description: 'Path to markdownlint config file (optional, uses defaults if not set)'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint Markdown files
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          config: ${{ inputs.config-file }}
+          globs: '**/*.md'

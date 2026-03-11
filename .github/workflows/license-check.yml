@@ -1,0 +1,42 @@
+name: License Check
+
+on:
+  workflow_call:
+    inputs:
+      allowed-licenses:
+        description: >
+          Comma-separated list of SPDX license identifiers to allow.
+          Defaults to permissive OSS licenses.
+        type: string
+        required: false
+        default: 'MIT,Apache-2.0,ISC,BSD-2-Clause,BSD-3-Clause,CC0-1.0,Unlicense,0BSD'
+
+permissions:
+  contents: read
+
+jobs:
+  license-check:
+    name: Check dependency licenses
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check licenses with licensee
+        run: |
+          gem install licensee --no-document 2>/dev/null
+          echo "Licencia del proyecto:"
+          licensee detect --json | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          license_id = data.get('matched_license', 'UNKNOWN')
+          print(f'  {license_id}')
+          allowed = '${{ inputs.allowed-licenses }}'.split(',')
+          if license_id not in allowed and license_id != 'UNKNOWN':
+              print(f'::error::Licencia {license_id} no está en la lista de licencias permitidas: {allowed}')
+              sys.exit(1)
+          elif license_id == 'UNKNOWN':
+              print('::warning::No se detectó licencia en el proyecto. Asegúrate de tener un fichero LICENSE.')
+          else:
+              print(f'Licencia {license_id} permitida ✓')
+          "

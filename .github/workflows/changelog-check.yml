@@ -1,0 +1,47 @@
+name: Changelog Check
+
+on:
+  workflow_call:
+    inputs:
+      changelog-file:
+        description: 'Path to the changelog file to check'
+        type: string
+        required: false
+        default: 'CHANGELOG.md'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  changelog:
+    name: Verify CHANGELOG is updated
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check CHANGELOG was modified
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          CHANGELOG: ${{ inputs.changelog-file }}
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: |
+          # Skip check for dependency update PRs (Dependabot, Renovate)
+          if echo "$PR_LABELS" | grep -qiE '"dependencies"|"renovate"'; then
+            echo "PR de dependencias detectado, se omite la verificación del CHANGELOG ✓"
+            exit 0
+          fi
+
+          CHANGED=$(git diff --name-only "${BASE_SHA}..${HEAD_SHA}")
+          if echo "$CHANGED" | grep -qF "$CHANGELOG"; then
+            echo "CHANGELOG actualizado correctamente ✓"
+          else
+            echo "::error::Este PR no incluye cambios en $CHANGELOG."
+            echo "Por favor, actualiza el CHANGELOG con los cambios introducidos."
+            echo "Si es un cambio que no requiere entrada (e.g. typo), añade el label 'dependencies' para omitir esta comprobación."
+            exit 1
+          fi
